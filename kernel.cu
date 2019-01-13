@@ -13,7 +13,7 @@ tile_calculation(float3 accel)
 {
 	extern volatile __shared__ float4 shPosition[];
 	int b = 1;//threadIdx.x;
-	accel.x += shPosition[b].x;
+	accel.x += shPosition[b].x;//problem is here in this function pretty much, where we access shared mem
 	return accel;
 }
 __global__ void
