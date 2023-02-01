@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04AA6D;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #04AA6D;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<h1>Harmonic generator</h1>
+
+<div class="slidecontainer">
+  <div>Fundemental Frequency</div><input type="range" min="0" max="10000" value="500" class="slider" id="myRange0">
+  <div>Fundemental Amplitude</div><input type="range" min="0" max="10000" value="500" class="slider" id="myRange1">
+  <div>1st Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange2">
+  <div>1st Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange3">
+  <div>2nd Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange4">
+  <div>2nd Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange5">
+  <div>3rd Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange6">
+  <div>3rd Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange7">
+  <div>4th Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange8">
+  <div>4th Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange9">
+  <div>5th Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange10">
+  <div>5th Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange11">
+  <div>6th Harmonic Amplitude</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange12">
+  <div>6th Harmonic Phase</div><input type="range" min="0" max="10000" value="0" class="slider" id="myRange13">
+  <p>Value: <span id="demo"></span></p>
+</div>
+
+<script>
+var slider0 = document.getElementById("myRange0");
+var slider = document.getElementById("myRange1");
+var slider2 = document.getElementById("myRange2");
+var slider3 = document.getElementById("myRange3");
+var slider4 = document.getElementById("myRange4");
+var slider5 = document.getElementById("myRange5");
+var slider6 = document.getElementById("myRange6");
+var slider7 = document.getElementById("myRange7");
+var slider8 = document.getElementById("myRange8");
+var slider9 = document.getElementById("myRange9");
+var slider10 = document.getElementById("myRange10");
+var slider11 = document.getElementById("myRange11");
+var slider12 = document.getElementById("myRange12");
+var slider13 = document.getElementById("myRange13");
+var output = document.getElementById("demo");
+output.innerHTML = slider.value;
+
+const real = new Float32Array(8);
+const imag = new Float32Array(8);
+const amp = new Float32Array(8);
+const phase = new Float32Array(8);
+const ac = new AudioContext();
+const osc = ac.createOscillator();
+osc.frequency.setValueAtTime(400, ac.currentTime); // value in hertz
+
+real[0] = 0;
+imag[0] = 0;
+real[1] = 0.1;
+imag[1] = 0;
+real[2] = 0;
+imag[2] = 0;
+real[3] = 0;
+imag[3] = 0;
+var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+osc.setPeriodicWave(wave);
+osc.connect(ac.destination);
+
+slider0.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  osc.frequency.setValueAtTime(parseFloat(this.value), ac.currentTime); // value in hertz
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+
+slider.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  real[1] = parseFloat(this.value)/10000;
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider2.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[2] = parseFloat(this.value/10000);
+  real[2] = amp[2]*Math.sin(phase[2]);
+  imag[2] = amp[2]*Math.cos(phase[2]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider3.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[2] = parseFloat(this.value/10000*Math.PI);
+  real[2] = amp[2]*Math.sin(phase[2]);
+  imag[2] = amp[2]*Math.cos(phase[2]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider4.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[3] = parseFloat(this.value/10000);
+  real[3] = amp[3]*Math.sin(phase[3]);
+  imag[3] = amp[3]*Math.cos(phase[3]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider5.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[3] = parseFloat(this.value/10000*Math.PI);
+  real[3] = amp[3]*Math.sin(phase[3]);
+  imag[3] = amp[3]*Math.cos(phase[3]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider6.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[4] = parseFloat(this.value/10000);
+  real[4] = amp[4]*Math.sin(phase[4]);
+  imag[4] = amp[4]*Math.cos(phase[4]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider7.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[4] = parseFloat(this.value/10000*Math.PI);
+  real[4] = amp[4]*Math.sin(phase[4]);
+  imag[4] = amp[4]*Math.cos(phase[4]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider8.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[5] = parseFloat(this.value/10000);
+  real[5] = amp[5]*Math.sin(phase[5]);
+  imag[5] = amp[5]*Math.cos(phase[5]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider9.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[5] = parseFloat(this.value/10000*Math.PI);
+  real[5] = amp[5]*Math.sin(phase[5]);
+  imag[5] = amp[5]*Math.cos(phase[5]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider10.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[6] = parseFloat(this.value/10000);
+  real[6] = amp[6]*Math.sin(phase[6]);
+  imag[6] = amp[6]*Math.cos(phase[6]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider11.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[6] = parseFloat(this.value/10000*Math.PI);
+  real[6] = amp[6]*Math.sin(phase[6]);
+  imag[6] = amp[6]*Math.cos(phase[6]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider12.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  amp[7] = parseFloat(this.value/10000);
+  real[7] = amp[7]*Math.sin(phase[7]);
+  imag[7] = amp[7]*Math.cos(phase[7]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+slider13.oninput = function() {
+  try {
+  osc.start();
+  } catch (error) {
+  console.error(error);
+  // Expected output: ReferenceError: nonExistentFunction is not defined
+  // (Note: the exact output may be browser-dependent)
+  }
+  output.innerHTML = this.value;
+  phase[7] = parseFloat(this.value/10000*Math.PI);
+  real[7] = amp[7]*Math.sin(phase[7]);
+  imag[7] = amp[7]*Math.cos(phase[7]);
+  var wave = ac.createPeriodicWave(real, imag, { disableNormalization: true });
+  osc.setPeriodicWave(wave);
+  osc.connect(ac.destination);
+}
+</script>
+
+</body>
+</html>
